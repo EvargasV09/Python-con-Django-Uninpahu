@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block title %}Jugadores - ChessCake{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-md-8">
+        <h1>Listado de Jugadores</h1>
+        <p class="text-muted">Total: {{ players|length }} jugador(es)</p>
+    </div>
+    <div class="col-md-4 text-end">
+        <a href="{% url 'chess:player_create' %}" class="btn btn-primary">
+            + Agregar Jugador
+        </a>
+    </div>
+</div>
+
+{% if players %}
+    <div class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Nombre</th>
+                    <th>Apellido</th>
+                    <th>Ranking</th>
+                    <th>Registrado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for player in players %}
+                    <tr>
+                        <td>{{ player.first_name }}</td>
+                        <td>{{ player.last_name }}</td>
+                        <td><strong>{{ player.ranking }}</strong></td>
+                        <td>{{ player.registered_at|date:"d/m/Y" }}</td>
+                        <td>
+                            <a href="{% url 'chess:player_detail' player.pk %}" class="btn btn-sm btn-info" title="Ver">
+                                Ver
+                            </a>
+                            <a href="{% url 'chess:player_edit' player.pk %}" class="btn btn-sm btn-warning" title="Editar">
+                                Editar
+                            </a>
+                            <a href="{% url 'chess:player_delete' player.pk %}" class="btn btn-sm btn-danger" title="Eliminar">
+                                Eliminar
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    {% if is_paginated %}
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1">Primera</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+                    </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active">
+                            <span class="page-link">{{ num }}</span>
+                        </li>
+                    {% else %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">Última</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    {% endif %}
+{% else %}
+    <div class="alert alert-info">
+        No hay jugadores registrados. <a href="{% url 'chess:player_create' %}">Crear el primero</a>
+    </div>
+{% endif %}
+{% endblock %}

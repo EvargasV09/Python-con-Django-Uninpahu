@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+
+{% block title %}Eliminar Partida - ChessCake{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-lg-6 mx-auto">
+        <div class="alert alert-warning">
+            <h4 class="alert-heading">⚠️ Confirmar Eliminación</h4>
+            <p>Estás a punto de eliminar la partida:</p>
+            <p><strong>{{ game.white_player }} vs {{ game.black_player }}</strong></p>
+            <p>Fecha: <strong>{{ game.played_at|date:"d/m/Y" }}</strong></p>
+            <hr>
+            <p class="mb-0">Esta acción no se puede deshacer. ¿Estás seguro?</p>
+        </div>
+
+        <form method="post" class="d-flex gap-2">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger btn-lg flex-grow-1">
+                Sí, Eliminar
+            </button>
+            <a href="{% url 'chess:game_detail' game.pk %}" class="btn btn-secondary btn-lg flex-grow-1">
+                Cancelar
+            </a>
+        </form>
+    </div>
+</div>
+{% endblock %}
